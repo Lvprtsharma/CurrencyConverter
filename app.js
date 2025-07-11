@@ -4,16 +4,49 @@ const btn = document.querySelector("form button");
 const fromCurr = document.querySelector(".from select");
 const toCurr = document.querySelector(".to select");
 const msg = document.querySelector("#msg");
+const amountInput = document.getElementById('amount-input');
+const errorMsg = document.getElementById('amount-error');
 
-const updateExchangeRate = async () => {
-    let amount = document.querySelector(".amount input");
-    let amtVal = Number(amount.value);
+amountInput.addEventListener("input", function() {
+    const originalValue = this.value;
+    let cleanedValue = originalValue.replace(/[^0-9.]/g, '');
+    
+    const parts = cleanedValue.split(".");
+    if(parts.length > 2){
+        cleanedValue = parts[0] + '.' + parts.slice(1).join('');
+    }
+
+    if (cleanedValue.includes('.')) {
+        const [intPart, decimalPart] = cleanedValue.split('.');
+        cleanedValue = intPart + '.' + decimalPart.slice(0, 2);
+    }
+
+    if(originalValue !== cleanedValue){
+        errorMsg.style.display = 'block';
+    }else{
+        errorMsg.style.display = "none";
+    }
+
+    this.value = cleanedValue;
+})
+
+amountInput.addEventListener('blur', function () {
+    errorMsg.style.display = 'none';
+});
+
+const getEnteredAmount = () => {
+    let amtVal = Number(amountInput.value);
 
     if (!amtVal || amtVal < 1) {
         amtVal = 1;
-        amount.value = "1";
+        amountInput.value = "1";
     }
+    console.log(amtVal);
+    return amtVal;
+}
 
+const updateExchangeRate = async () => {
+    const amtVal = getEnteredAmount();
     const fromCurrency = fromCurr.value.toLowerCase();
     const toCurrency = toCurr.value.toLowerCase();
     const url = `${BASE_URL}/${fromCurrency}.json`;
@@ -32,7 +65,8 @@ const updateExchangeRate = async () => {
         const exchangeRate = data[fromCurrency][toCurrency];
         const finalAmount = (amtVal * exchangeRate).toFixed(2);
 
-        msg.innerText = `${amtVal} ${fromCurr.value} = ${finalAmount} ${toCurr.value}`;
+        msg.innerHTML = `${amtVal} <b>${fromCurr.value}</b> = ${finalAmount} <b>${toCurr.value}</b>`;
+
     } catch (error) {
         console.error("Error fetching exchange rate:", error);
         msg.innerText = "Failed to fetch exchange rate. Please try again later.";
@@ -58,6 +92,7 @@ const populateCurrencyOptions = () => {
 
         select.addEventListener("change", (evt) => {
             updateFlag(evt.target);
+            updateExchangeRate();
         });
     }
 };
@@ -73,14 +108,11 @@ const updateFlag = (element) => {
     }
 };
 
-btn.addEventListener("click", (evt) => {
-    evt.preventDefault();
+amountInput.addEventListener("change", (evt) => {
     updateExchangeRate();
-});
+})
 
-// On page load
 window.addEventListener("load", () => {
     populateCurrencyOptions();
     updateExchangeRate();
 });
-

@@ -23,7 +23,7 @@ Coming soon! This project will be deployed on Netlify or Github Pages.
 - Displays national flags for selected currencies
 - User-friendly interface
 - Defaults to converting USD ➡️ INR
-- Validates input to ensure minimum value of 1
+- Validates input to ensure minimum value of 1 and numeric only
 
 ---
 
