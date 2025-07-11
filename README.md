@@ -6,13 +6,14 @@ A simple and responsive currency converter app built with vanilla JavaScript. It
 
 ## 🌐 Live Demo
 
-Coming soon! This project will be deployed on Netlify or Github Pages.
+Project is live on Netlify: https://currencyconvertter.netlify.app/
+![Alt Text](assets/recording.gif)
 
 ---
 
 ## 📸 Screenshots
 
-*(Screenshots will be added soon)*
+![Alt Text](assets/screenshot.png)
 
 ---
 
